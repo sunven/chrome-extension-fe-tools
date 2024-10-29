@@ -18,8 +18,10 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import {
+  Braces,
   Cloud,
   CreditCard,
+  FileJson,
   Github,
   Keyboard,
   LifeBuoy,
@@ -29,7 +31,6 @@ import {
   Plus,
   PlusCircle,
   Settings,
-  User,
   UserPlus,
   Users
 } from "lucide-react"
@@ -39,18 +40,23 @@ function IndexPopup() {
 
   return (
     <div className="plasmo-w-[200px] plasmo-h-[400px]">
-      <DropdownMenu defaultOpen={true}>
+      <DropdownMenu open={true} modal={false}>
         <DropdownMenuTrigger>
-          <Button variant="outline">Open</Button>
+          {/* <Button variant="outline">Open</Button> */}
+          <DropdownMenuLabel>Front Tools</DropdownMenuLabel>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
+          {/* <DropdownMenuLabel>Front Tools</DropdownMenuLabel> */}
+          {/* <DropdownMenuSeparator /> */}
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <User />
-              <span>Profile</span>
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            <DropdownMenuItem
+              onClick={() => {
+                chrome.tabs.create({
+                  url: "../tabs/json.html"
+                })
+              }}>
+              <Braces />
+              <span>JSON</span>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <CreditCard />
