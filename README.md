@@ -34,3 +34,8 @@ The easiest way to deploy your Plasmo extension is to use the built-in [bpp](htt
 
 - 有时候热更新不生效，需要删除`.piasmo`
 - tabs 要直接放文件，再放文件夹不生效
+
+monaco-editor
+<https://www.jsont.run/>
+<https://json-diff.com/>
+<https://github.com/mac-s-g/react-json-view>
