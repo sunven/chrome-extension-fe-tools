@@ -39,7 +39,7 @@ function IndexPopup() {
   const [data, setData] = useState("")
 
   return (
-    <div className="plasmo-w-[200px] plasmo-h-[400px]">
+    <div className="w-[200px] h-[400px]">
       <DropdownMenu open={true} modal={false}>
         <DropdownMenuTrigger>
           {/* <Button variant="outline">Open</Button> */}

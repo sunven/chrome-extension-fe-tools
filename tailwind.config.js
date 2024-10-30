@@ -4,7 +4,6 @@ const { fontFamily } = require("tailwindcss/defaultTheme")
 module.exports = {
   content: ["./src/**/*.{tsx,html}"],
   // darkMode: "media",
-  prefix: "plasmo-",
   darkMode: ["class"],
   theme: {
     container: {

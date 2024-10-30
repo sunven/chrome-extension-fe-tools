@@ -72,10 +72,10 @@
 
 @layer base {
   * {
-    @apply plasmo-border-border;
+    @apply border-border;
   }
   body {
-    @apply plasmo-bg-background plasmo-text-foreground;
+    @apply bg-background text-foreground;
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
