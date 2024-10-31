@@ -1,5 +1,5 @@
 @import "../globals.css";
 
-body {
-  height: 100%;
+#__plasmo {
+  height: 100vh;
 }

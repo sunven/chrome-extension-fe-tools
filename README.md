@@ -39,3 +39,4 @@ monaco-editor
 <https://www.jsont.run/>
 <https://json-diff.com/>
 <https://github.com/mac-s-g/react-json-view>
+<https://github.com/josdejong/jsoneditor>
