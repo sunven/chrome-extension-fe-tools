@@ -9,6 +9,8 @@ import "./json.css"
 import * as monaco from "monaco-editor"
 import { useEffect, useRef, useState } from "react"
 
+import JSONEditorReact from "./JSONEditorReact"
+
 self.MonacoEnvironment = {
   getWorker: function (workerId, label) {
     const getWorkerModule = (moduleUrl, label) => {
@@ -38,45 +40,46 @@ export default function Json() {
     useState<monaco.editor.IStandaloneCodeEditor | null>(null)
   const monacoEl = useRef(null)
 
-  useEffect(() => {
-    if (monacoEl) {
-      setEditor((editor) => {
-        if (editor) return editor
+  // useEffect(() => {
+  //   if (monacoEl) {
+  //     setEditor((editor) => {
+  //       if (editor) return editor
 
-        const a = {
-          string: "Hello, World!",
-          number: 42,
-          array: ["apple", "banana"],
-          object: {
-            name: "John Doe",
-            courses: [
-              {
-                courseName: "Mathematics",
-                credits: 3
-              }
-            ]
-          }
-        }
-        const newEditor = monaco.editor.create(monacoEl.current!, {
-          value: JSON.stringify(a, null, "\t"),
-          language: "json"
-        })
+  //       const a = {
+  //         string: "Hello, World!",
+  //         number: 42,
+  //         array: ["apple", "banana"],
+  //         object: {
+  //           name: "John Doe",
+  //           courses: [
+  //             {
+  //               courseName: "Mathematics",
+  //               credits: 3
+  //             }
+  //           ]
+  //         }
+  //       }
+  //       const newEditor = monaco.editor.create(monacoEl.current!, {
+  //         value: JSON.stringify(a, null, "\t"),
+  //         language: "json"
+  //       })
 
-        // 添加内容变化监听器
+  //       // 添加内容变化监听器
 
-        return newEditor
-      })
-    }
+  //       return newEditor
+  //     })
+  //   }
 
-    return () => editor?.dispose()
-  }, [monacoEl.current])
+  //   return () => editor?.dispose()
+  // }, [monacoEl.current])
   return (
     <ResizablePanelGroup
       direction="horizontal"
       className="h-full rounded-lg border">
       <ResizablePanel defaultSize={40}>
         <div className="flex h-full items-center justify-center p-6">
-          <div className="h-full w-full" ref={monacoEl}></div>
+          {/* <div className="h-full w-full" ref={monacoEl}></div> */}
+          <JSONEditorReact />
         </div>
       </ResizablePanel>
       <ResizableHandle withHandle />
