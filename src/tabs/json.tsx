@@ -3,9 +3,17 @@ import {
   ResizablePanel,
   ResizablePanelGroup
 } from "@/components/ui/resizable"
+import { json } from "@codemirror/lang-json"
+import { basicSetup, EditorView } from "codemirror"
 
 import "./json.css"
 
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList
+} from "@/components/ui/navigation-menu"
 import * as monaco from "monaco-editor"
 import { useEffect, useRef, useState } from "react"
 
@@ -60,7 +68,7 @@ export default function Json() {
   //         }
   //       }
   //       const newEditor = monaco.editor.create(monacoEl.current!, {
-  //         value: JSON.stringify(a, null, "\t"),
+  //         value: JSON.stringify(a, null, 2),
   //         language: "json"
   //       })
 
@@ -72,22 +80,57 @@ export default function Json() {
 
   //   return () => editor?.dispose()
   // }, [monacoEl.current])
+  useEffect(() => {
+    let editor = new EditorView({
+      doc: JSON.stringify(
+        {
+          string: "Hello, World!",
+          number: 42,
+          array: ["apple", "banana"],
+          object: {
+            name: "John Doe",
+            courses: [
+              {
+                courseName: "Mathematics",
+                credits: 3
+              }
+            ]
+          }
+        },
+        null,
+        2
+      ),
+      extensions: [basicSetup, json()],
+      parent: monacoEl.current
+    })
+  }, [])
   return (
-    <ResizablePanelGroup
-      direction="horizontal"
-      className="h-full rounded-lg border">
-      <ResizablePanel defaultSize={40}>
-        <div className="flex h-full items-center justify-center p-6">
-          {/* <div className="h-full w-full" ref={monacoEl}></div> */}
-          <JSONEditorReact />
-        </div>
-      </ResizablePanel>
-      <ResizableHandle withHandle />
-      <ResizablePanel defaultSize={75}>
-        <div className="flex h-full items-center justify-center p-6">
-          <span className="font-semibold">Content</span>
-        </div>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+    <div>
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuContent>View</NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem>Diff</NavigationMenuItem>
+          <NavigationMenuItem>Documentation</NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="h-full rounded-lg border">
+        <ResizablePanel defaultSize={40}>
+          <div className="flex h-full items-center justify-center p-6">
+            <div className="h-full w-full" ref={monacoEl}></div>
+            {/* <JSONEditorReact /> */}
+          </div>
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel defaultSize={75}>
+          <div className="flex h-full items-center justify-center p-6">
+            <span className="font-semibold">Content</span>
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>{" "}
+    </div>
   )
 }
