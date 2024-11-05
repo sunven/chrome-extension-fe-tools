@@ -64,9 +64,9 @@ export default function Json() {
     autoFormat(editorView)
   }, [])
   return (
-    <div className="h-full">
+    <div className="h-full p-2">
       <Tabs defaultValue="account" className="w-full h-full flex flex-col">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-[200px] grid-cols-2 self-center">
           <TabsTrigger value="account">View</TabsTrigger>
           <TabsTrigger value="password">Diff</TabsTrigger>
         </TabsList>
