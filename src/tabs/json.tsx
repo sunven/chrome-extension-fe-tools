@@ -1,136 +1,133 @@
+import { basicSetup, EditorView } from "codemirror"
+
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup
 } from "@/components/ui/resizable"
-import { json } from "@codemirror/lang-json"
-import { basicSetup, EditorView } from "codemirror"
+import { EditorState } from "@codemirror/state"
 
 import "./json.css"
 
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList
-} from "@/components/ui/navigation-menu"
-import * as monaco from "monaco-editor"
+import { Braces } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
-import JSONEditorReact from "./JSONEditorReact"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from "@/components/ui/tooltip"
+import { json } from "@codemirror/lang-json"
 
-self.MonacoEnvironment = {
-  getWorker: function (workerId, label) {
-    const getWorkerModule = (moduleUrl, label) => {
-      return new Worker(self.MonacoEnvironment.getWorkerUrl(moduleUrl), {
-        name: label,
-        type: "module"
-      })
-    }
+const jsonStr = `{"string":"Hello, World!","number":42,"array":["apple","banana"],"object":{"name":"John Doe","courses":[{"courseName":"Mathematics","credits":3}]}}`
 
-    switch (label) {
-      case "json":
-        return getWorkerModule(
-          "/monaco-editor/esm/vs/language/json/json.worker?worker",
-          label
-        )
-      default:
-        return getWorkerModule(
-          "/monaco-editor/esm/vs/editor/editor.worker?worker",
-          label
-        )
+function formatJson(str) {
+  return JSON.stringify(JSON.parse(str), null, 2)
+}
+
+// https://codemirror.net/examples/decoration/
+
+/**
+ *
+ * @param editorView
+ * @param doc
+ * https://discuss.codemirror.net/t/how-to-set-new-doc-content/5156
+ */
+function setDoc(editorView, doc) {
+  editorView.dispatch({
+    changes: {
+      from: 0,
+      to: editorView.state.doc.length,
+      insert: doc
     }
-  }
+  })
+}
+
+function autoFormat(editorView) {
+  setDoc(editorView, formatJson(editorView.state.doc))
 }
 
 export default function Json() {
-  const [editor, setEditor] =
-    useState<monaco.editor.IStandaloneCodeEditor | null>(null)
   const monacoEl = useRef(null)
+  const [editorView, setEditorView] = useState<EditorView>(null)
 
-  // useEffect(() => {
-  //   if (monacoEl) {
-  //     setEditor((editor) => {
-  //       if (editor) return editor
-
-  //       const a = {
-  //         string: "Hello, World!",
-  //         number: 42,
-  //         array: ["apple", "banana"],
-  //         object: {
-  //           name: "John Doe",
-  //           courses: [
-  //             {
-  //               courseName: "Mathematics",
-  //               credits: 3
-  //             }
-  //           ]
-  //         }
-  //       }
-  //       const newEditor = monaco.editor.create(monacoEl.current!, {
-  //         value: JSON.stringify(a, null, 2),
-  //         language: "json"
-  //       })
-
-  //       // 添加内容变化监听器
-
-  //       return newEditor
-  //     })
-  //   }
-
-  //   return () => editor?.dispose()
-  // }, [monacoEl.current])
   useEffect(() => {
-    let editor = new EditorView({
-      doc: JSON.stringify(
-        {
-          string: "Hello, World!",
-          number: 42,
-          array: ["apple", "banana"],
-          object: {
-            name: "John Doe",
-            courses: [
-              {
-                courseName: "Mathematics",
-                credits: 3
-              }
-            ]
-          }
-        },
-        null,
-        2
-      ),
+    let editorView = new EditorView({
+      doc: jsonStr,
       extensions: [basicSetup, json()],
       parent: monacoEl.current
     })
+    setEditorView(editorView)
+    autoFormat(editorView)
   }, [])
   return (
-    <div>
-      <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuContent>View</NavigationMenuContent>
-          </NavigationMenuItem>
-          <NavigationMenuItem>Diff</NavigationMenuItem>
-          <NavigationMenuItem>Documentation</NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="h-full rounded-lg border">
-        <ResizablePanel defaultSize={40}>
-          <div className="flex h-full items-center justify-center p-6">
-            <div className="h-full w-full" ref={monacoEl}></div>
-            {/* <JSONEditorReact /> */}
-          </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={75}>
-          <div className="flex h-full items-center justify-center p-6">
-            <span className="font-semibold">Content</span>
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>{" "}
+    <div className="h-full">
+      <Tabs defaultValue="account" className="w-full h-full flex flex-col">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="account">View</TabsTrigger>
+          <TabsTrigger value="password">Diff</TabsTrigger>
+        </TabsList>
+        <TabsContent value="account" className="flex-1">
+          <ResizablePanelGroup
+            direction="horizontal"
+            className="h-full rounded-lg border">
+            <ResizablePanel defaultSize={40}>
+              <div className="flex p-2 gap-1 justify-end">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          autoFormat(editorView)
+                        }}>
+                        <Braces />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>format</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="h-full w-full overflow-auto" ref={monacoEl}></div>
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={75}>
+              <div className="flex h-full items-center justify-center p-6">
+                <span className="font-semibold">Content</span>
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </TabsContent>
+        {/* <TabsContent value="password">
+          <Card>
+            <CardHeader>
+              <CardTitle>Password</CardTitle>
+              <CardDescription>
+                Change your password here. After saving, you'll be logged out.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="space-y-1">
+                <Label htmlFor="current">Current password</Label>
+                <Input id="current" type="password" />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="new">New password</Label>
+                <Input id="new" type="password" />
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button>Save password</Button>
+            </CardFooter>
+          </Card>
+        </TabsContent> */}
+      </Tabs>
     </div>
   )
 }
