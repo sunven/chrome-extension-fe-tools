@@ -1,6 +1,6 @@
 import "./index.css"
 
-import { Braces, Clock } from "lucide-react"
+import { Braces, Clock, Palette } from "lucide-react"
 
 import {
   Sidebar,
@@ -44,6 +44,17 @@ function Popup() {
                       }}>
                       <Clock />
                       <span>时间（戳）转换</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      onClick={() => {
+                        chrome.tabs.create({
+                          url: "../tabs/color.html"
+                        })
+                      }}>
+                      <Palette />
+                      <span>颜色转换</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
