@@ -21,6 +21,7 @@ import {
   TooltipTrigger
 } from "@/components/ui/tooltip"
 import { json } from "@codemirror/lang-json"
+import ReactJsonView from "@microlink/react-json-view"
 
 const jsonStr = `{"string":"Hello, World!","number":42,"array":["apple","banana"],"object":{"name":"John Doe","courses":[{"courseName":"Mathematics","credits":3}]}}`
 
@@ -65,41 +66,46 @@ export default function Json() {
   }, [])
   return (
     <div className="h-full p-2">
-      <Tabs defaultValue="account" className="w-full h-full flex flex-col">
-        <TabsList className="grid w-[200px] grid-cols-2 self-center">
+      <Tabs defaultValue="account" className="h-full flex flex-col">
+        <TabsList className="flex  self-center">
           <TabsTrigger value="account">View</TabsTrigger>
           <TabsTrigger value="password">Diff</TabsTrigger>
         </TabsList>
-        <TabsContent value="account" className="flex-1">
-          <ResizablePanelGroup
-            direction="horizontal"
-            className="h-full rounded-lg border">
+        <TabsContent value="account" className="flex-1 overflow-hidden">
+          <ResizablePanelGroup direction="horizontal" className="h-full border">
             <ResizablePanel defaultSize={40}>
-              <div className="flex p-2 gap-1 justify-end">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => {
-                          autoFormat(editorView)
-                        }}>
-                        <Braces />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>format</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+              <div className="h-full flex flex-col overflow-hidden">
+                <div className="flex gap-1 justify-end border-b">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => {
+                            autoFormat(editorView)
+                          }}>
+                          <Braces />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>format</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                <div className="flex-1 overflow-auto" ref={monacoEl}></div>
               </div>
-              <div className="h-full w-full overflow-auto" ref={monacoEl}></div>
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={75}>
-              <div className="flex h-full items-center justify-center p-6">
-                <span className="font-semibold">Content</span>
+              <div className="h-full p-2 overflow-auto">
+                <ReactJsonView
+                  name={false}
+                  enableClipboard={false}
+                  displayDataTypes={false}
+                  src={JSON.parse(editorView?.state.doc.toString() || "{}")}
+                />
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>
