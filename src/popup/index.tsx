@@ -1,4 +1,4 @@
-import "@/globals.css"
+import "./index.css"
 
 import { Braces } from "lucide-react"
 
