@@ -5,12 +5,12 @@ import {
   ResizablePanel,
   ResizablePanelGroup
 } from "@/components/ui/resizable"
-import { EditorState } from "@codemirror/state"
+import { EditorState, StateField } from "@codemirror/state"
 
 import "./json.css"
 
 import { Braces } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -54,16 +54,33 @@ function autoFormat(editorView) {
 export default function Json() {
   const monacoEl = useRef(null)
   const [editorView, setEditorView] = useState<EditorView>(null)
+  const [text, setText] = useState(jsonStr)
+
+  const listenChangesExtension = useMemo(() => {
+    // https://github.com/codemirror/dev/issues/44#issuecomment-789093799
+    return StateField.define({
+      // we won't use the actual StateField value, null or undefined is fine
+      create: () => null,
+      update: (value, transaction) => {
+        if (transaction.docChanged) {
+          // access new content via the Transaction
+          setText(transaction.newDoc.toString())
+        }
+        return null
+      }
+    })
+  }, [])
 
   useEffect(() => {
     let editorView = new EditorView({
       doc: jsonStr,
-      extensions: [basicSetup, json()],
+      extensions: [basicSetup, json(), listenChangesExtension],
       parent: monacoEl.current
     })
     setEditorView(editorView)
     autoFormat(editorView)
   }, [])
+
   return (
     <div className="h-full p-2">
       <Tabs defaultValue="account" className="h-full flex flex-col">
@@ -104,7 +121,7 @@ export default function Json() {
                   name={false}
                   enableClipboard={false}
                   displayDataTypes={false}
-                  src={JSON.parse(editorView?.state.doc.toString() || "{}")}
+                  src={JSON.parse(text)}
                 />
               </div>
             </ResizablePanel>
