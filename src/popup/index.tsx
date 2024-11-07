@@ -1,6 +1,6 @@
 import "./index.css"
 
-import { Braces, Clock, Palette } from "lucide-react"
+import { Binary, Braces, Clock, Palette } from "lucide-react"
 
 import {
   Sidebar,
@@ -55,6 +55,17 @@ function Popup() {
                       }}>
                       <Palette />
                       <span>颜色转换</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      onClick={() => {
+                        chrome.tabs.create({
+                          url: "../tabs/text.html"
+                        })
+                      }}>
+                      <Binary />
+                      <span>编/解码</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
