@@ -80,19 +80,25 @@ export default function Json() {
   }, [text])
 
   useEffect(() => {
-    let editorView = new EditorView({
-      doc: jsonStr,
-      extensions: [basicSetup, json(), listenChangesExtension],
-      parent: monacoEl.current
-    })
-    setEditorView(editorView)
-    autoFormat(editorView)
+    if (!editorView) {
+      let editorView = new EditorView({
+        doc: jsonStr,
+        extensions: [basicSetup, json(), listenChangesExtension],
+        parent: monacoEl.current
+      })
+      setEditorView(editorView)
+      autoFormat(editorView)
+    }
+
+    return () => {
+      editorView.destroy()
+    }
   }, [])
 
   return (
     <div className="h-full p-2">
       <Tabs defaultValue="account" className="h-full flex flex-col">
-        <TabsList className="flex  self-center">
+        <TabsList className="flex self-center">
           <TabsTrigger value="account">View</TabsTrigger>
           <TabsTrigger value="password">Diff</TabsTrigger>
         </TabsList>
@@ -119,7 +125,13 @@ export default function Json() {
                     </Tooltip>
                   </TooltipProvider>
                 </div>
-                <div className="flex-1 overflow-auto" ref={monacoEl}></div>
+                <div
+                  className="flex-1 overflow-auto"
+                  onClick={() => {
+                    // https://discuss.codemirror.net/t/code-mirror-6-has-focus-what-about-blur/4071
+                    editorView.contentDOM.focus()
+                  }}
+                  ref={monacoEl}></div>
               </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
