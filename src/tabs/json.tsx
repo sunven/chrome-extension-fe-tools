@@ -10,7 +10,7 @@ import { EditorState, StateField } from "@codemirror/state"
 import "./json.css"
 
 import { Braces } from "lucide-react"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -71,6 +71,14 @@ export default function Json() {
     })
   }, [])
 
+  const getJson = useCallback(() => {
+    try {
+      return JSON.parse(text)
+    } catch (error) {
+      return [error.message]
+    }
+  }, [text])
+
   useEffect(() => {
     let editorView = new EditorView({
       doc: jsonStr,
@@ -121,7 +129,7 @@ export default function Json() {
                   name={false}
                   enableClipboard={false}
                   displayDataTypes={false}
-                  src={JSON.parse(text)}
+                  src={getJson()}
                 />
               </div>
             </ResizablePanel>
