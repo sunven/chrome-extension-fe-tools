@@ -8,10 +8,14 @@ import { Textarea } from "@/components/ui/textarea"
 
 import "@/globals.css"
 
+import { Input } from "@/components/ui/input"
+
 export default function ImageToBase64() {
   const [dataUri, setDataUri] = useState("")
   const [originalSize, setOriginalSize] = useState(0)
   const [dataUriSize, setDataUriSize] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const [copyLabel, setCopyLabel] = useState("copy")
 
   const handleFileSelect = useCallback((file: File) => {
     const reader = new FileReader()
@@ -51,6 +55,17 @@ export default function ImageToBase64() {
     [handleFileSelect]
   )
 
+  const handleCopy = useCallback(() => {
+    if (dataUri) {
+      navigator.clipboard.writeText(dataUri).then(() => {
+        setCopyLabel("copied...")
+        setTimeout(() => {
+          setCopyLabel("copy")
+        }, 2000)
+      })
+    }
+  }, [])
+
   // Add paste event listener
   useEffect(() => {
     document.addEventListener("paste", handlePaste)
@@ -67,26 +82,25 @@ export default function ImageToBase64() {
         </CardHeader>
         <CardContent className="grid gap-6 md:grid-cols-2">
           <div
-            className="border-2 border-dashed rounded-lg p-4 text-center"
+            // className="border-2 border-dashed rounded-lg p-4 text-center"
+            className={`border-2 border-dashed rounded-lg p-4 text-center ${isDragging ? "bg-gray-200" : ""}`} // 根据状态添加高亮样式
             onDrop={handleDrop}
-            onDragOver={(e) => e.preventDefault()}>
-            <input
+            onDragOver={(e) => {
+              e.preventDefault()
+              setIsDragging(true) // 拖拽时设置状态
+            }}
+            onDragLeave={() => setIsDragging(false)}>
+            <Input
               type="file"
               id="fileInput"
-              className="hidden"
+              // className="hidden"
               accept="image/*"
               onChange={(e) => {
                 const file = e.target.files?.[0]
                 if (file) handleFileSelect(file)
               }}
             />
-            <label htmlFor="fileInput">
-              <Button className="mb-2">
-                <Upload className="mr-2 h-4 w-4" />
-                选择图片
-              </Button>
-            </label>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground mt-2">
               或者选择一张图片拖拽到这里来
             </p>
             {dataUri && (
@@ -101,13 +115,16 @@ export default function ImageToBase64() {
             )}
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 flex flex-col">
             <Textarea
               placeholder="DataURI"
               value={dataUri}
               readOnly
-              className="h-[200px] font-mono text-sm"
+              className="flex-1 font-mono text-sm"
             />
+            <Button className="mt-2" onClick={handleCopy}>
+              {copyLabel}
+            </Button>
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
                 <ImageIcon className="h-4 w-4" />
