@@ -1,6 +1,6 @@
 import "./index.css"
 
-import { Binary, Braces, Clock, Palette } from "lucide-react"
+import { Binary, Braces, Clock, Image, Palette } from "lucide-react"
 
 import {
   Sidebar,
@@ -14,6 +14,34 @@ import {
   SidebarProvider
 } from "@/components/ui/sidebar"
 
+const items = [
+  {
+    label: "JSON",
+    icon: <Braces />,
+    url: "../tabs/json.html"
+  },
+  {
+    label: "时间（戳）转换",
+    icon: <Clock />,
+    url: "../tabs/time.html"
+  },
+  {
+    label: "颜色转换",
+    icon: <Palette />,
+    url: "../tabs/color.html"
+  },
+  {
+    label: "编/解码",
+    icon: <Binary />,
+    url: "../tabs/text.html"
+  },
+  {
+    label: "图片转 Base64",
+    icon: <Image />,
+    url: "../tabs/image-to-base64.html"
+  }
+]
+
 function Popup() {
   return (
     <div className="w-[200px] h-[400px]">
@@ -24,50 +52,19 @@ function Popup() {
               <SidebarGroupLabel>Front Tools</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      onClick={() => {
-                        chrome.tabs.create({
-                          url: "../tabs/json.html"
-                        })
-                      }}>
-                      <Braces />
-                      <span>JSON</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      onClick={() => {
-                        chrome.tabs.create({
-                          url: "../tabs/time.html"
-                        })
-                      }}>
-                      <Clock />
-                      <span>时间（戳）转换</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      onClick={() => {
-                        chrome.tabs.create({
-                          url: "../tabs/color.html"
-                        })
-                      }}>
-                      <Palette />
-                      <span>颜色转换</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      onClick={() => {
-                        chrome.tabs.create({
-                          url: "../tabs/text.html"
-                        })
-                      }}>
-                      <Binary />
-                      <span>编/解码</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  {items.map((item, index) => (
+                    <SidebarMenuItem key={index}>
+                      <SidebarMenuButton
+                        onClick={() => {
+                          chrome.tabs.create({
+                            url: item.url
+                          })
+                        }}>
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
