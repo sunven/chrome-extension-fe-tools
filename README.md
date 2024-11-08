@@ -38,7 +38,7 @@ The easiest way to deploy your Plasmo extension is to use the built-in [bpp](htt
 monaco-editor
 <https://www.jsont.run/>
 <https://json-diff.com/>
-<https://github.com/mac-s-g/react-json-view>
+<https://github.com/mac-s-g/react-json-view> 不支持展开全部
 <https://github.com/josdejong/jsoneditor>
 
 ## TODO

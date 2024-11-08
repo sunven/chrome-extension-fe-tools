@@ -1,17 +1,21 @@
-import { basicSetup, EditorView } from "codemirror"
+import { Storage } from "@plasmohq/storage"
 
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup
 } from "@/components/ui/resizable"
-import { EditorState, StateField } from "@codemirror/state"
 
 import "./json.css"
 
-import { Braces } from "lucide-react"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { debounce } from "lodash-es"
+import { Braces, ChevronsDownUp, ChevronsUpDown } from "lucide-react"
+import { useCallback, useEffect } from "react"
 
+import { useStorage } from "@plasmohq/storage/hook"
+
+import CodeMirror from "@/components/code-mirror"
+import JSONEditorReact from "@/components/JSONEditorReact"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -20,8 +24,6 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from "@/components/ui/tooltip"
-import { json } from "@codemirror/lang-json"
-import ReactJsonView from "@microlink/react-json-view"
 
 const jsonStr = `{"string":"Hello, World!","number":42,"array":["apple","banana"],"object":{"name":"John Doe","courses":[{"courseName":"Mathematics","credits":3}]}}`
 
@@ -31,69 +33,27 @@ function formatJson(str) {
 
 // https://codemirror.net/examples/decoration/
 
-/**
- *
- * @param editorView
- * @param doc
- * https://discuss.codemirror.net/t/how-to-set-new-doc-content/5156
- */
-function setDoc(editorView, doc) {
-  editorView.dispatch({
-    changes: {
-      from: 0,
-      to: editorView.state.doc.length,
-      insert: doc
-    }
-  })
-}
-
-function autoFormat(editorView) {
-  setDoc(editorView, formatJson(editorView.state.doc))
-}
+// function autoFormat(editorView) {
+//   setDoc(editorView, formatJson(editorView.state.doc))
+// }
 
 export default function Json() {
-  const monacoEl = useRef(null)
-  const [editorView, setEditorView] = useState<EditorView>(null)
-  const [text, setText] = useState(jsonStr)
-
-  const listenChangesExtension = useMemo(() => {
-    // https://github.com/codemirror/dev/issues/44#issuecomment-789093799
-    return StateField.define({
-      // we won't use the actual StateField value, null or undefined is fine
-      create: () => null,
-      update: (value, transaction) => {
-        if (transaction.docChanged) {
-          // access new content via the Transaction
-          setText(transaction.newDoc.toString())
-        }
-        return null
-      }
-    })
-  }, [])
-
-  const getJson = useCallback(() => {
-    try {
-      return JSON.parse(text)
-    } catch (error) {
-      return [error.message]
-    }
-  }, [text])
-
-  useEffect(() => {
-    if (!editorView) {
-      let editorView = new EditorView({
-        doc: jsonStr,
-        extensions: [basicSetup, json(), listenChangesExtension],
-        parent: monacoEl.current
+  const [text, _, { setRenderValue, setStoreValue }] = useStorage(
+    {
+      key: "json:text",
+      instance: new Storage({
+        area: "local"
       })
-      setEditorView(editorView)
-      autoFormat(editorView)
-    }
+    },
+    jsonStr
+  )
 
-    return () => {
-      editorView.destroy()
-    }
-  }, [])
+  const setText = useCallback(debounce(setStoreValue, 1000), [
+    setStoreValue,
+    setRenderValue
+  ])
+
+  useEffect(() => {}, [])
 
   return (
     <div className="h-full p-2">
@@ -114,7 +74,7 @@ export default function Json() {
                           size="sm"
                           variant="ghost"
                           onClick={() => {
-                            autoFormat(editorView)
+                            // autoFormat(editorView)
                           }}>
                           <Braces />
                         </Button>
@@ -125,24 +85,47 @@ export default function Json() {
                     </Tooltip>
                   </TooltipProvider>
                 </div>
-                <div
+                <CodeMirror
                   className="flex-1 overflow-auto"
-                  onClick={() => {
-                    // https://discuss.codemirror.net/t/code-mirror-6-has-focus-what-about-blur/4071
-                    editorView.contentDOM.focus()
+                  text={text}
+                  onTextChange={(text) => {
+                    setRenderValue(text)
+                    setText()
                   }}
-                  ref={monacoEl}></div>
+                />
               </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={75}>
-              <div className="h-full p-2 overflow-auto">
-                <ReactJsonView
-                  name={false}
-                  enableClipboard={false}
-                  displayDataTypes={false}
-                  src={getJson()}
-                />
+              <div className="flex flex-col h-full overflow-hidden">
+                <div className="flex gap-1 justify-end border-b">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      // setCollapsed(true)
+                    }}>
+                    <ChevronsDownUp />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      // setCollapsed(false)
+                    }}>
+                    <ChevronsUpDown />
+                  </Button>
+                </div>
+                <div className="flex-1 overflow-auto p-2">
+                  <JSONEditorReact text={text} />
+                  {/* <ReactJsonView
+                    collapsed={collapsed}
+                    name={false}
+                    enableClipboard={false}
+                    displayDataTypes={false}
+                    src={getJson()}
+                  /> */}
+                </div>
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>
