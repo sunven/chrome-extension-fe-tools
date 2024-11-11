@@ -1,8 +1,11 @@
+import clsx from "clsx"
 import { basicSetup, EditorView } from "codemirror"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { json } from "@codemirror/lang-json"
 import { StateField } from "@codemirror/state"
+
+import "./index.less"
 
 export default function CodeMirror({ text, onTextChange, className }) {
   const ref = useRef<HTMLDivElement>()
@@ -66,7 +69,7 @@ export default function CodeMirror({ text, onTextChange, className }) {
   }, [text])
   return (
     <div
-      className={className}
+      className={clsx("cm-wrapper", className)}
       ref={ref}
       onClick={() => {
         // https://discuss.codemirror.net/t/code-mirror-6-has-focus-what-about-blur/4071

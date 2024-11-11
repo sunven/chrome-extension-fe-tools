@@ -1,0 +1,65 @@
+.jsoneditor-wrapper {
+  height: 100%;
+
+  .jsoneditor {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .jsoneditor-menu {
+      background-color: hsl(var(--background));
+      border: none;
+
+      >button {
+        background-color: hsl(var(--foreground));
+
+        &:disabled {
+          background-color: hsl(var(--muted));
+        }
+      }
+
+      .jsoneditor-search {
+        background-color: hsl(var(--muted));
+
+        .jsoneditor-results {
+          color: hsl(var(--foreground));
+          padding: 0 4px;
+        }
+
+        .jsoneditor-frame {
+          background-color: hsl(var(--muted));
+          display: flex;
+          gap: 4px;
+
+          button {
+            margin-top: 2px;
+          }
+
+          input {
+            border: solid 1px hsl(var(--input));
+            border-radius: calc(var(--radius) - 2px);
+            height: 1.5rem;
+          }
+        }
+      }
+    }
+
+    .jsoneditor-navigation-bar {
+      background-color: hsl(var(--muted));
+      border: none;
+    }
+
+    .jsoneditor-outer {
+      flex: 1;
+      padding: 0;
+      margin: 0;
+      overflow: auto;
+
+      &.has-nav-bar.has-main-menu-bar {
+        padding: 0;
+        margin: 0;
+      }
+    }
+  }
+}

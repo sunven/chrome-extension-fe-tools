@@ -9,7 +9,7 @@ import {
 import "./json.css"
 
 import { debounce } from "lodash-es"
-import { Braces, ChevronsDownUp, ChevronsUpDown } from "lucide-react"
+import { Braces } from "lucide-react"
 import { useCallback, useEffect } from "react"
 
 import { useStorage } from "@plasmohq/storage/hook"
@@ -27,15 +27,7 @@ import {
 
 const jsonStr = `{"string":"Hello, World!","number":42,"array":["apple","banana"],"object":{"name":"John Doe","courses":[{"courseName":"Mathematics","credits":3}]}}`
 
-function formatJson(str) {
-  return JSON.stringify(JSON.parse(str), null, 2)
-}
-
 // https://codemirror.net/examples/decoration/
-
-// function autoFormat(editorView) {
-//   setDoc(editorView, formatJson(editorView.state.doc))
-// }
 
 export default function Json() {
   const [text, _, { setRenderValue, setStoreValue }] = useStorage(
@@ -97,35 +89,8 @@ export default function Json() {
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={75}>
-              <div className="flex flex-col h-full overflow-hidden">
-                <div className="flex gap-1 justify-end border-b">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => {
-                      // setCollapsed(true)
-                    }}>
-                    <ChevronsDownUp />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => {
-                      // setCollapsed(false)
-                    }}>
-                    <ChevronsUpDown />
-                  </Button>
-                </div>
-                <div className="flex-1 overflow-auto p-2">
-                  <JSONEditorReact text={text} />
-                  {/* <ReactJsonView
-                    collapsed={collapsed}
-                    name={false}
-                    enableClipboard={false}
-                    displayDataTypes={false}
-                    src={getJson()}
-                  /> */}
-                </div>
+              <div className="h-full overflow-hidden">
+                <JSONEditorReact text={text} />
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>

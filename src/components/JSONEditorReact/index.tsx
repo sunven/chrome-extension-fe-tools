@@ -4,6 +4,8 @@ import "jsoneditor/dist/jsoneditor.css"
 
 import React, { useEffect, useRef, useState } from "react"
 
+import "./index.less"
+
 export default function JSONEditorReact(props) {
   const { text, ...reset } = props
   const ref = useRef<HTMLDivElement>(null)
@@ -17,5 +19,5 @@ export default function JSONEditorReact(props) {
   useEffect(() => {
     jsonEditor?.setText(text)
   }, [text])
-  return <div className="jsoneditor-react-container" ref={ref} />
+  return <div className="jsoneditor-wrapper" ref={ref} />
 }
