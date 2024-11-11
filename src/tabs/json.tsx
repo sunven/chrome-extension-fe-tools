@@ -29,8 +29,12 @@ const jsonStr = `{"string":"Hello, World!","number":42,"array":["apple","banana"
 
 // https://codemirror.net/examples/decoration/
 
+function formatJsonString(str) {
+  return JSON.stringify(JSON.parse(str), null, 2)
+}
+
 export default function Json() {
-  const [text, _, { setRenderValue, setStoreValue }] = useStorage(
+  const [text, setText, { setRenderValue, setStoreValue }] = useStorage(
     {
       key: "json:text",
       instance: new Storage({
@@ -40,9 +44,8 @@ export default function Json() {
     jsonStr
   )
 
-  const setText = useCallback(debounce(setStoreValue, 1000), [
-    setStoreValue,
-    setRenderValue
+  const setStoreValueDebounce = useCallback(debounce(setStoreValue, 1000), [
+    setStoreValue
   ])
 
   useEffect(() => {}, [])
@@ -66,7 +69,7 @@ export default function Json() {
                           size="sm"
                           variant="ghost"
                           onClick={() => {
-                            // autoFormat(editorView)
+                            setText(formatJsonString(text))
                           }}>
                           <Braces />
                         </Button>
@@ -82,7 +85,7 @@ export default function Json() {
                   text={text}
                   onTextChange={(text) => {
                     setRenderValue(text)
-                    setText()
+                    setStoreValueDebounce()
                   }}
                 />
               </div>

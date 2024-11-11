@@ -20,7 +20,6 @@ export default function CodeMirror({ text, onTextChange, className }) {
         if (transaction.docChanged) {
           // access new content via the Transaction
           const newText = transaction.newDoc.toString()
-          console.log("update", value, newText)
           if (text === newText) {
             return
           }
