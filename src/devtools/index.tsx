@@ -1,4 +1,4 @@
-import fontPickerHTML from "url:./panels/font-picker/index.html"
+import jsonStringHTML from "url:../panels/json-string/index.html"
 
 import { Storage } from "@plasmohq/storage"
 
@@ -8,8 +8,8 @@ chrome.devtools.panels.create(
   "Json String",
   null,
   // See: https://github.com/PlasmoHQ/plasmo/issues/106#issuecomment-1188539625
-  // ex: chrome-extension://enffmhlimdbgmifhemllbmhedbgplgkc/font-picker.c78f005d.html?1731032454801
-  fontPickerHTML.split("/").pop()
+  // ex: chrome-extension://enffmhlimdbgmifhemllbmhedbgplgkc/json-string.c78f005d.html?1731032454801
+  jsonStringHTML.split("/").pop()
 )
 
 chrome.devtools.network.onRequestFinished.addListener(function (request) {
@@ -21,7 +21,8 @@ chrome.devtools.network.onRequestFinished.addListener(function (request) {
     request.getContent(function (content, encoding) {
       storage.set("requestData", {
         request: request.request,
-        response: request.response
+        response: request.response,
+        content
       })
       chrome.devtools.inspectedWindow.eval(
         'console.log("getContent:' +
@@ -32,22 +33,4 @@ chrome.devtools.network.onRequestFinished.addListener(function (request) {
       )
     })
   }
-
-  // chrome.devtools.inspectedWindow.eval(
-  //   'console.log("inspectedWindow:' +
-  //     request.request.url +
-  //     '" + ' +
-  //     request.response.content.text +
-  //     ")"
-  // )
 })
-
-function IndexDevtools() {
-  return (
-    <h2>
-      Welcome to your <a href="https://www.plasmo.com">Plasmo</a> Extension!
-    </h2>
-  )
-}
-
-export default IndexDevtools

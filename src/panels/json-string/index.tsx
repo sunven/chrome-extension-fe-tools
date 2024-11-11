@@ -12,14 +12,18 @@ import {
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow
 } from "@/components/ui/table"
 
-const FontPicker = () => {
+import "./index.less"
+
+import JSONEditorReact from "@/components/json-editor"
+
+const JsonString = () => {
+  const [text, setText] = useState("")
   const [requestData] = useStorage({
     key: "requestData",
     instance: new Storage({
@@ -45,7 +49,12 @@ const FontPicker = () => {
             </TableHeader>
             <TableBody>
               {requestDataList.map((requestData, index) => (
-                <TableRow key={index}>
+                <TableRow
+                  key={index}
+                  onClick={() => {
+                    console.log("requestData.content", requestData.content)
+                    setText(requestData.content)
+                  }}>
                   <TableCell>{requestData.request.url}</TableCell>
                 </TableRow>
               ))}
@@ -53,11 +62,15 @@ const FontPicker = () => {
           </Table>
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={75}></ResizablePanel>
+        <ResizablePanel defaultSize={75}>
+          <div className="h-full overflow-hidden">
+            <JSONEditorReact text={text} />
+          </div>
+        </ResizablePanel>
       </ResizablePanelGroup>
     </>
   )
 }
 
 const root = createRoot(document.getElementById("root"))
-root.render(<FontPicker />)
+root.render(<JsonString />)

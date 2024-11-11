@@ -15,7 +15,7 @@ import { useCallback, useEffect } from "react"
 import { useStorage } from "@plasmohq/storage/hook"
 
 import CodeMirror from "@/components/code-mirror"
-import JSONEditorReact from "@/components/JSONEditorReact"
+import JSONEditorReact from "@/components/json-editor"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
