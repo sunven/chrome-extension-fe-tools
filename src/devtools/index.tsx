@@ -4,6 +4,8 @@ import { Storage } from "@plasmohq/storage"
 
 const storage = new Storage({ area: "local" })
 
+storage.set("requestData", [])
+
 chrome.devtools.panels.create(
   "Json String",
   null,
@@ -17,20 +19,38 @@ chrome.devtools.network.onRequestFinished.addListener(function (request) {
     return
   }
 
-  if (request.request.url.includes("getApplicationSaasList")) {
-    request.getContent(function (content, encoding) {
-      storage.set("requestData", {
+  if (
+    !request.response.headers.find(
+      (header) =>
+        header.name.toLowerCase() === "content-type" &&
+        header.value.toLowerCase().includes("application/json")
+    )
+  ) {
+    return
+  }
+
+  const url = new URL(request.request.url)
+
+  if (
+    url.hostname === "localhost" ||
+    url.hostname === "127.0.0.1" ||
+    url.hostname.startsWith("192.168")
+  ) {
+    request.getContent(async function (content, encoding) {
+      const requestData = (await storage.get<any[]>("requestData")) || []
+      requestData.push({
         request: request.request,
         response: request.response,
         content
       })
-      chrome.devtools.inspectedWindow.eval(
-        'console.log("getContent:' +
-          request.request.url +
-          '" + ' +
-          JSON.stringify(request.response) +
-          ")"
-      )
+      storage.set("requestData", requestData)
+      // chrome.devtools.inspectedWindow.eval(
+      //   'console.log("getContent:' +
+      //     request.request.url +
+      //     '" + ' +
+      //     JSON.stringify(request.response) +
+      //     ")"
+      // )
     })
   }
 })
