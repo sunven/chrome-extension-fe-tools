@@ -11,13 +11,17 @@ export default function JSONEditorReact(props) {
   const ref = useRef<HTMLDivElement>(null)
   const [jsonEditor, setJsonEditor] = useState<JSONEditor | null>(null)
   useEffect(() => {
-    if (ref.current) {
-      const editor = new JSONEditor(ref.current, reset)
-      setJsonEditor(editor)
+    if (!jsonEditor) {
+      const jsonEditor = new JSONEditor(ref.current, reset)
+      setJsonEditor(jsonEditor)
     }
   }, [])
   useEffect(() => {
-    jsonEditor?.setText(text)
+    try {
+      jsonEditor?.setText(text)
+    } catch (error) {
+      console.error(error)
+    }
   }, [text])
   return <div className="jsoneditor-wrapper" ref={ref} />
 }

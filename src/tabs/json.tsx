@@ -9,7 +9,7 @@ import {
 import "./json.css"
 
 import { debounce } from "lodash-es"
-import { Braces } from "lucide-react"
+import { Braces, Trash2 } from "lucide-react"
 import { useCallback, useEffect } from "react"
 
 import { useStorage } from "@plasmohq/storage/hook"
@@ -34,16 +34,16 @@ function formatJsonString(str) {
 }
 
 export default function Json() {
-  const [text, setText, { setRenderValue, setStoreValue }] = useStorage(
-    {
-      key: "json:text",
-      instance: new Storage({
-        area: "local"
-      })
-    },
-    jsonStr
-  )
-
+  const [text = jsonStr, setText, { setRenderValue, setStoreValue, remove }] =
+    useStorage(
+      {
+        key: "json:text",
+        instance: new Storage({
+          area: "local"
+        })
+      },
+      jsonStr
+    )
   const setStoreValueDebounce = useCallback(debounce(setStoreValue, 1000), [
     setStoreValue
   ])
@@ -76,6 +76,23 @@ export default function Json() {
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>format</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => {
+                            remove()
+                          }}>
+                          <Trash2 />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>delete storage</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
