@@ -44,7 +44,7 @@ const items = [
 
 function Popup() {
   return (
-    <div className="w-[200px] h-[400px]">
+    <div className="w-[200px]">
       <SidebarProvider open={true} defaultOpen={true}>
         <Sidebar collapsible="none">
           <SidebarContent>
