@@ -9,14 +9,16 @@ function renderDate(value: string) {
 }
 
 const columns: TreeTableProps["columns"] = [
-  { key: "title", header: "Title", width: "400px" },
+  {
+    key: "title",
+    header: "Title"
+  },
   {
     key: "url",
     header: "URL",
-    width: "400px",
     render(value) {
       return (
-        <a href={value} target="_blank" className="decoration-current">
+        <a href={value} target="_blank" className="[all:revert]">
           {value}
         </a>
       )
@@ -37,7 +39,7 @@ const columns: TreeTableProps["columns"] = [
   {
     key: "dateGroupModified",
     header: "Date Group Modified",
-    width: "180px",
+    width: "200px",
     render: renderDate
   }
 ]

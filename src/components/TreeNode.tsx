@@ -33,16 +33,13 @@ export const TreeNode: React.FC<TreeNodeProps> = ({ item, columns, level }) => {
     <>
       <tr className="hover:bg-gray-50">
         {columns.map((column, index) => (
-          <td
-            key={column.key}
-            className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-            style={{ width: column.width }}>
-            <div className="flex items-center" style={{ width: column.width }}>
+          <td key={column.key} className="px-6 py-4 text-sm text-gray-500">
+            <div className="flex items-center">
               {index === 0 && (
                 <>
                   <div
                     className="shrink-0"
-                    style={{ width: `${level * 20}px` }}
+                    style={{ width: `${level * 30}px` }}
                   />
                   {hasChildren && (
                     <button
@@ -61,27 +58,6 @@ export const TreeNode: React.FC<TreeNodeProps> = ({ item, columns, level }) => {
                 {renderCell(column, item[column.key], item, index, level)}
               </div>
             </div>
-            {/* {index === 0 && (
-              <div
-                className="flex items-center"
-                style={{ width: column.width }}>
-                <div style={{ width: `${level * 20}px` }} />
-                {hasChildren && (
-                  <button
-                    onClick={toggleExpand}
-                    className="mr-2 text-gray-400 hover:text-gray-600">
-                    {isExpanded ? (
-                      <ChevronDownIcon className="h-5 w-5" />
-                    ) : (
-                      <ChevronRightIcon className="h-5 w-5" />
-                    )}
-                  </button>
-                )}
-                {renderCell(column, item[column.key], item, index, level)}
-              </div>
-            )}
-            {index !== 0 &&
-              renderCell(column, item[column.key], item, index, level)} */}
           </td>
         ))}
       </tr>
