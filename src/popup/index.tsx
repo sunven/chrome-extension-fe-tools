@@ -1,6 +1,6 @@
 import "./index.css"
 
-import { Binary, Braces, Clock, Image, Palette } from "lucide-react"
+import { Binary, Bookmark, Braces, Clock, Image, Palette } from "lucide-react"
 
 import {
   Sidebar,
@@ -39,6 +39,11 @@ const items = [
     label: "图片转 Base64",
     icon: <Image />,
     url: "../tabs/image-to-base64.html"
+  },
+  {
+    label: "书签",
+    icon: <Bookmark />,
+    url: "../tabs/bookmarks.html"
   }
 ]
 
