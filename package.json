@@ -55,7 +55,10 @@
     ],
     "permissions": [
       "tabs",
-      "bookmarks"
+      "bookmarks",
+      "contextMenus",
+      "storage",
+      "scripting"
     ]
   }
 }
